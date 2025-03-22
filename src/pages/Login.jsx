@@ -14,17 +14,22 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post('https://hostingexp-2.onrender.com/login', { email: email.trim() });
-      console.log(res);
+      const response = await axios.post('https://hostingexp-2.onrender.com/login', 
+        { email: email.trim() },
+        { 
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true
+        }
+      );
 
-      if (res.data === "Success") {
-        navigate('/home'); // Navigate to the home page
+      if (response.data === "Success") {
+        navigate('/home');
       } else {
         setError('Invalid email or user not found');
       }
     } catch (err) {
-      console.error(err);
-      setError('Something went wrong. Please try again.');
+      setError(err.response?.data?.error || 'Something went wrong. Please try again.');
+      console.error('Login error:', err);
     } finally {
       setLoading(false);
     }

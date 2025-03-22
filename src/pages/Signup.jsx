@@ -21,12 +21,22 @@ const Signup = () => {
         setError(null);
 
         try {
-            const res = await axios.post('https://hostingexp-2.onrender.com/register', { name, email });
-            console.log(res);
-            navigate('/login');
+            const response = await axios.post('https://hostingexp-2.onrender.com/register', 
+                { name, email },
+                { 
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+            );
+
+            if (response.data) {
+                navigate('/login');
+            } else {
+                setError("Registration failed. Please try again.");
+            }
         } catch (err) {
-            setError("Registration failed. Try again!");
-            console.error(err);
+            setError(err.response?.data?.error || "Registration failed. Please try again!");
+            console.error('Registration error:', err);
         } finally {
             setLoading(false);
         }
